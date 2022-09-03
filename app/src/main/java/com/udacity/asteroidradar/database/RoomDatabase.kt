@@ -24,8 +24,20 @@ interface AsteroidDoa {
     @Query("SELECT * FROM ${TABLE_NAME} ORDER by closeApproachDate")
     fun getAll(): LiveData<List<AsteroidDataEntity>>
 
+    @Query("SELECT * FROM ${TABLE_NAME} where closeApproachDate== :date ORDER by closeApproachDate")
+    fun getOneDay(date :String): LiveData<List<AsteroidDataEntity>>
+
+
+    @Query("SELECT * FROM ${TABLE_NAME} where closeApproachDate>= :startDate and closeApproachDate<=:endDate ORDER by closeApproachDate")
+    fun get7Day(startDate :String,endDate:String): LiveData<List<AsteroidDataEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(asteroids: List<AsteroidDataEntity>)
+
+    @Delete
+    fun delete(asteroid: AsteroidDataEntity)
+
+
 }
 
 @Database(entities = [AsteroidDataEntity::class], version = 1)

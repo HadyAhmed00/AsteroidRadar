@@ -65,3 +65,17 @@ fun bindImagePictureOfDay(imageView: ImageView, data: PictureOfDay?) {
 
     }
 }
+
+@BindingAdapter("setContentDescription")
+fun setContentDescription(imageView: ImageView, data: Asteroid?) {
+
+    data?.let {
+        val strFormat = imageView.resources.getString(
+            R.string.nasa_detail_picture_content_description_format)
+        imageView.contentDescription = String.format(strFormat, when(data.isPotentiallyHazardous){
+            false->R.string.not_hazardous_asteroid_image
+            true->R.string.potentially_hazardous_asteroid_image
+        })
+    }
+}
+

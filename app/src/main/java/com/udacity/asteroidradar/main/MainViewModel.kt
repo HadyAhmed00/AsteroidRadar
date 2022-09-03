@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.database.AsteroidDatabase
@@ -17,8 +18,8 @@ class MainViewModel(app : Application) : AndroidViewModel(app) {
 
     private val database = AsteroidDatabase.getInstance(app)
     private val repository = Repo(database)
-    val asteroids = repository.data
 
+    lateinit var asteroids :LiveData<List<Asteroid>>
     private val _showDetail= MutableLiveData<Asteroid>()
     val showDetail : LiveData<Asteroid>
     get() = _showDetail
@@ -28,8 +29,10 @@ class MainViewModel(app : Application) : AndroidViewModel(app) {
         get() = _imageOfTheDay
 
     init {
+        fillData(Constants.Filter.ALL_DATA)
         getMarsRealEstateProperties()
         getImageOfTheDay()
+
     }
     private fun getMarsRealEstateProperties() {
         viewModelScope.launch {
@@ -55,6 +58,10 @@ class MainViewModel(app : Application) : AndroidViewModel(app) {
         }
 
 
+    }
+
+    fun fillData(filter: Constants.Filter){
+       asteroids = repository.getData(filter)
     }
 
     fun displayDetails(asteroid: Asteroid){

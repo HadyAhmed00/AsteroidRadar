@@ -63,14 +63,14 @@ interface AsteroidApiService {
 }
 
 
-private fun getEndData(): String {
+fun getEndData(): String {
     val calendar = Calendar.getInstance()
     val currentTime = calendar.time
     val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
     return dateFormat.format(currentTime)
 }
 
-private fun getStartDate(): String {
+fun getStartDate(): String {
     val calendar = Calendar.getInstance()
     val currentTime = calendar.time
     calendar.add(Calendar.DAY_OF_WEEK, -7)

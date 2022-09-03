@@ -29,8 +29,12 @@
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
+                android:contentDescription="@{viewModel.imageOfTheDay.title}"
                 app:srcCompat="@drawable/placeholder_picture_of_day"
-                app:dayImage="@{viewModel.imageOfTheDay}"/>
+                app:dayImage="@{viewModel.imageOfTheDay}"
+
+
+                />
 
             <TextView
                 android:id="@+id/textView"
@@ -69,16 +73,5 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/test_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/default_text_color"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Test Text"
-            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
