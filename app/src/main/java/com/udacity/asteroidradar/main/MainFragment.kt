@@ -17,19 +17,13 @@ class MainFragment : Fragment() {
         ViewModelProvider(this).get(MainViewModel::class.java)
     }
 
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val binding = FragmentMainBinding.inflate(inflater)
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        val adapter = MainListAdapter( MainListAdapter.OnClickListener {
-            viewModel.displayDetails(it)
-            Toast.makeText(this.context, "you just pressed ${it.id} and the code name is ${it.codename}", Toast.LENGTH_SHORT).show()
-        })
-//        adapter.submitList(viewModel.dumList)
+
 
         viewModel.showDetail.observe(viewLifecycleOwner, Observer {
             if(it != null)
@@ -37,23 +31,19 @@ class MainFragment : Fragment() {
                 this.findNavController().navigate(MainFragmentDirections.actionShowDetail(it))
                 viewModel.finsNav()
             }
-
         })
 
+        val adapter = MainListAdapter( MainListAdapter.OnClickListener {
+            viewModel.displayDetails(it)
+        })
 
         binding.asteroidRecycler.adapter= adapter
 
-        viewModel.listData.observe(viewLifecycleOwner,Observer{
+        viewModel.asteroids.observe(viewLifecycleOwner,Observer{
             adapter.submitList(it)
         })
 
-
-        viewModel.response.observe(viewLifecycleOwner,Observer{
-            binding.testTxt.text=it
-        })
-
         setHasOptionsMenu(true)
-
         return binding.root
     }
 
@@ -65,7 +55,5 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return true
     }
-
-
 
 }

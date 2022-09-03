@@ -55,12 +55,9 @@ fun bindImagePictureOfDay(imageView: ImageView, data: PictureOfDay?) {
 
     data?.let {
 
-
-
         Picasso.with(imageView.context)
             .load(it.url)
             .into(imageView)
-
 
         val strFormat = imageView.resources.getString(
             R.string.nasa_picture_of_day_content_description_format)

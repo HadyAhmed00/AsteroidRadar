@@ -1,52 +1,43 @@
 package com.udacity.asteroidradar.main
 
+import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.AsteroidApi
+import com.udacity.asteroidradar.database.AsteroidDatabase
+import com.udacity.asteroidradar.database.Repo
+
 import kotlinx.coroutines.launch
 
 
-class MainViewModel : ViewModel() {
+class MainViewModel(app : Application) : AndroidViewModel(app) {
 
+    private val database = AsteroidDatabase.getInstance(app)
+    private val repository = Repo(database)
+    val asteroids = repository.data
 
     private val _showDetail= MutableLiveData<Asteroid>()
     val showDetail : LiveData<Asteroid>
     get() = _showDetail
-
-
-    private val _listData = MutableLiveData<List<Asteroid>>()
-    val listData : LiveData<List<Asteroid>>
-    get()=_listData
-
-    private val _response = MutableLiveData<String>()
-    val response : LiveData<String>
-    get() = _response
-
 
     private val _imageOfTheDay = MutableLiveData<PictureOfDay>()
         val imageOfTheDay : LiveData<PictureOfDay>
         get() = _imageOfTheDay
 
     init {
-        _listData.value = ArrayList()
         getMarsRealEstateProperties()
         getImageOfTheDay()
-
     }
     private fun getMarsRealEstateProperties() {
         viewModelScope.launch {
             try {
-                _listData.value = AsteroidApi.getAsteroids()
-                Log.i("MainViewModel","the data in the 1st element is ${_listData.value}")
+                repository.refreshAsteroid()
 
             } catch (e: Exception) {
-                _response.value = "Failure: ${e.message}"
+
                 Log.i("getData","the Error is ${e.message}")
             }
         }
@@ -55,7 +46,7 @@ class MainViewModel : ViewModel() {
     private fun getImageOfTheDay(){
         viewModelScope.launch {
             try {
-                Log.i("ImageOfTheDay","Done")
+
                 _imageOfTheDay.value=AsteroidApi.getImageOfTheDay()
                 Log.i("ImageOfTheDay","Done")
             }catch (e:Exception) {

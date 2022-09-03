@@ -26,7 +26,6 @@ class MainListAdapter ( val onClickListener: OnClickListener ) : ListAdapter<Ast
     class MainListViewHolder(val binding : ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind (item: Asteroid){
-            // TODO: fill the view here
             binding.asteroid = item
             binding.executePendingBindings()
         }
