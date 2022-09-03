@@ -40,10 +40,6 @@ class MainFragment : Fragment() {
 
         binding.asteroidRecycler.adapter= adapter
 
-        viewModel.asteroids.observe(viewLifecycleOwner,Observer{
-            adapter.submitList(it)
-        })
-
         setHasOptionsMenu(true)
         return binding.root
     }

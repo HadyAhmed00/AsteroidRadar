@@ -14,26 +14,32 @@ import com.udacity.asteroidradar.database.Repo
 import kotlinx.coroutines.launch
 
 
-class MainViewModel(app : Application) : AndroidViewModel(app) {
+class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private val database = AsteroidDatabase.getInstance(app)
     private val repository = Repo(database)
 
-    lateinit var asteroids :LiveData<List<Asteroid>>
-    private val _showDetail= MutableLiveData<Asteroid>()
-    val showDetail : LiveData<Asteroid>
-    get() = _showDetail
+    lateinit var asteroids: LiveData<List<Asteroid>>
+
+    private val _mutableAsteroids = MutableLiveData<List<Asteroid>>()
+    val mutableAsteroids: LiveData<List<Asteroid>>
+        get() = _mutableAsteroids
+
+    private val _showDetail = MutableLiveData<Asteroid>()
+    val showDetail: LiveData<Asteroid>
+        get() = _showDetail
 
     private val _imageOfTheDay = MutableLiveData<PictureOfDay>()
-        val imageOfTheDay : LiveData<PictureOfDay>
+    val imageOfTheDay: LiveData<PictureOfDay>
         get() = _imageOfTheDay
 
     init {
-        fillData(Constants.Filter.ALL_DATA)
+        fillData(Constants.Filter.THIS_DAY)
         getMarsRealEstateProperties()
         getImageOfTheDay()
 
     }
+
     private fun getMarsRealEstateProperties() {
         viewModelScope.launch {
             try {
@@ -41,33 +47,33 @@ class MainViewModel(app : Application) : AndroidViewModel(app) {
 
             } catch (e: Exception) {
 
-                Log.i("getData","the Error is ${e.message}")
+                Log.i("getData", "the Error is ${e.message}")
             }
         }
     }
 
-    private fun getImageOfTheDay(){
+    private fun getImageOfTheDay() {
         viewModelScope.launch {
             try {
-
-                _imageOfTheDay.value=AsteroidApi.getImageOfTheDay()
-                Log.i("ImageOfTheDay","Done")
-            }catch (e:Exception) {
-                Log.i("ImageOfTheDay","the Error Massage is ${e.message}")
+                _imageOfTheDay.value = AsteroidApi.getImageOfTheDay()
+            } catch (e: Exception) {
+                Log.i("ImageOfTheDay", "the Error Massage is ${e.message}")
             }
         }
 
 
     }
 
-    fun fillData(filter: Constants.Filter){
-       asteroids = repository.getData(filter)
+    fun fillData(filter: Constants.Filter) {
+        asteroids = repository.getData(filter)
+        _mutableAsteroids.value = asteroids.value
     }
 
-    fun displayDetails(asteroid: Asteroid){
-        _showDetail.value=asteroid
+    fun displayDetails(asteroid: Asteroid) {
+        _showDetail.value = asteroid
     }
-    fun finsNav(){
+
+    fun finsNav() {
         _showDetail.value = null
     }
 }
