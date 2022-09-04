@@ -38,6 +38,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         get() = _imageOfTheDay
 
     init {
+        getTodayAsteroids()
         getMarsRealEstateProperties()
         getImageOfTheDay()
     }
@@ -89,7 +90,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
-    
+
     fun displayDetails(asteroid: Asteroid) {
         _showDetail.value = asteroid
     }
