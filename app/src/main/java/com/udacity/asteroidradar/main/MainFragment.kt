@@ -52,9 +52,9 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         when(item.itemId){
-            R.id.show_saved_menu ->viewModel.fillData(Constants.Filter.ALL_DATA)
-            R.id.show_week_menu->viewModel.fillData(Constants.Filter.LAST7DAYS)
-            R.id.show_today_menu->viewModel.fillData(Constants.Filter.THIS_DAY)
+            R.id.show_saved_menu ->viewModel.getAllAsteroids1()
+            R.id.show_week_menu->viewModel.getWeekAsteroids()
+            R.id.show_today_menu->viewModel.getTodayAsteroids()
         }
 
 

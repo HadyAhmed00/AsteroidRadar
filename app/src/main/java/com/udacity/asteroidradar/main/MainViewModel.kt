@@ -6,12 +6,16 @@ import android.widget.Toast
 import androidx.lifecycle.*
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.Constants.afterWeek
+import com.udacity.asteroidradar.Constants.currDay
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.AsteroidApi
 import com.udacity.asteroidradar.database.AsteroidDatabase
 import com.udacity.asteroidradar.database.Repo
+import kotlinx.coroutines.flow.collect
 
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
@@ -19,11 +23,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     private val database = AsteroidDatabase.getInstance(app)
     private val repository = Repo(database)
 
-    lateinit var asteroids: LiveData<List<Asteroid>>
 
-    private val _mutableAsteroids = MutableLiveData<List<Asteroid>>()
-    val mutableAsteroids: LiveData<List<Asteroid>>
-        get() = _mutableAsteroids
+    private val _allAsteroids = MutableLiveData<List<Asteroid>>()
+        val allAsteroids : LiveData<List<Asteroid>>
+        get() = _allAsteroids
+
 
     private val _showDetail = MutableLiveData<Asteroid>()
     val showDetail: LiveData<Asteroid>
@@ -34,10 +38,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         get() = _imageOfTheDay
 
     init {
-        fillData(Constants.Filter.THIS_DAY)
         getMarsRealEstateProperties()
         getImageOfTheDay()
-
     }
 
     private fun getMarsRealEstateProperties() {
@@ -64,15 +66,33 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     }
 
-    fun fillData(filter: Constants.Filter) {
-        asteroids = repository.getData(filter)
-        _mutableAsteroids.value = asteroids.value
+    fun getWeekAsteroids() {
+        viewModelScope.launch {
+            database.asteroidDao.get7Day(currDay(), afterWeek()).collect {
+                _allAsteroids.value=it
+            }
+        }
     }
 
+    fun getTodayAsteroids() {
+        viewModelScope.launch {
+            database.asteroidDao.get7Day(currDay(), currDay()).collect {
+                _allAsteroids.value = it
+            }
+        }
+    }
+
+    fun getAllAsteroids1() {
+        viewModelScope.launch {
+            database.asteroidDao.getAll().collect {
+                _allAsteroids.value = it
+            }
+        }
+    }
+    
     fun displayDetails(asteroid: Asteroid) {
         _showDetail.value = asteroid
     }
-
     fun finsNav() {
         _showDetail.value = null
     }

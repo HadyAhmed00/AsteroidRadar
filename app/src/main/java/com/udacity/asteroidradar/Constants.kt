@@ -1,5 +1,8 @@
 package com.udacity.asteroidradar
 
+import java.text.SimpleDateFormat
+import java.util.*
+
 object Constants {
     const val API_QUERY_DATE_FORMAT = "YYYY-MM-dd"
     const val DEFAULT_END_DATE_DAYS = 7
@@ -13,6 +16,21 @@ object Constants {
         ALL_DATA,
         THIS_DAY,
         LAST7DAYS
+    }
+
+     fun currDay(): String {
+        val calendar = Calendar.getInstance()
+        val currentTime = calendar.time
+        val dateFormat = SimpleDateFormat(API_QUERY_DATE_FORMAT, Locale.getDefault())
+        return dateFormat.format(currentTime)
+    }
+
+     fun afterWeek(): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR,6)
+        val currentTime = calendar.time
+        val dateFormat = SimpleDateFormat(API_QUERY_DATE_FORMAT, Locale.getDefault())
+        return dateFormat.format(currentTime)
     }
 }
 

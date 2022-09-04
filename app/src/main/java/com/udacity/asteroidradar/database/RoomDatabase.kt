@@ -1,46 +1,39 @@
 package com.udacity.asteroidradar.database
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.squareup.moshi.JsonClass
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants.DATABASE_NAME
 import com.udacity.asteroidradar.Constants.TABLE_NAME
+import kotlinx.android.parcel.Parcelize
+import kotlinx.coroutines.flow.Flow
 
 
-@Entity(tableName = TABLE_NAME)
-data class AsteroidDataEntity(
-    @PrimaryKey
-    val id: Long,
-    val codename: String, val closeApproachDate: String,
-    val absoluteMagnitude: Double, val estimatedDiameter: Double,
-    val relativeVelocity: Double, val distanceFromEarth: Double,
-    val isPotentiallyHazardous: Boolean
-)
+
 
 @Dao
 interface AsteroidDoa {
 
     @Query("SELECT * FROM ${TABLE_NAME} ORDER by closeApproachDate")
-    fun getAll(): LiveData<List<AsteroidDataEntity>>
-
-    @Query("SELECT * FROM ${TABLE_NAME} where closeApproachDate== :date ORDER by closeApproachDate")
-    fun getOneDay(date :String): LiveData<List<AsteroidDataEntity>>
+    fun getAll(): Flow<List<Asteroid>>
 
 
     @Query("SELECT * FROM ${TABLE_NAME} where closeApproachDate>= :startDate and closeApproachDate<=:endDate ORDER by closeApproachDate")
-    fun get7Day(startDate :String,endDate:String): LiveData<List<AsteroidDataEntity>>
+    fun get7Day(startDate :String,endDate:String): Flow<List<Asteroid>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(asteroids: List<AsteroidDataEntity>)
+    fun insertAll(asteroids: List<Asteroid>)
 
     @Delete
-    fun delete(asteroid: AsteroidDataEntity)
+    fun delete(asteroid: Asteroid)
 
 
 }
 
-@Database(entities = [AsteroidDataEntity::class], version = 1)
+@Database(entities = [Asteroid::class], version = 1)
 abstract class AsteroidDatabase : RoomDatabase() {
     abstract val asteroidDao: AsteroidDoa
     companion object {
@@ -59,35 +52,5 @@ abstract class AsteroidDatabase : RoomDatabase() {
             }
             return instance
         }
-    }
-}
-
-fun List<AsteroidDataEntity>.asAsteroids() : List<Asteroid> {
-    return map {
-        Asteroid(
-            id = it.id,
-            codename = it.codename,
-            closeApproachDate = it.closeApproachDate,
-            absoluteMagnitude = it.absoluteMagnitude,
-            estimatedDiameter = it.estimatedDiameter,
-            relativeVelocity = it.relativeVelocity,
-            distanceFromEarth = it.distanceFromEarth,
-            isPotentiallyHazardous = it.isPotentiallyHazardous
-        )
-    }
-}
-
-fun List<Asteroid>.asAsteroidEntities() : List<AsteroidDataEntity> {
-    return map {
-        AsteroidDataEntity(
-            id = it.id,
-            codename = it.codename,
-            closeApproachDate = it.closeApproachDate,
-            absoluteMagnitude = it.absoluteMagnitude,
-            estimatedDiameter = it.estimatedDiameter,
-            relativeVelocity = it.relativeVelocity,
-            distanceFromEarth = it.distanceFromEarth,
-            isPotentiallyHazardous = it.isPotentiallyHazardous
-        )
     }
 }
