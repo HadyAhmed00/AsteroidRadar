@@ -19,4 +19,7 @@ The lessons:
 * Work Manager(schedule to update database every day)
 * Accessibility (provide basic accessibility such as content description for texts and images)
 ## What The App look like?
-![](screenshots/completed_android_kotlin_developer_nanodegree_projects_02.gif)
+
+
+https://user-images.githubusercontent.com/61879050/189815106-04f0ec9b-a999-4772-9b99-715bbb7e9c2d.mp4
+
